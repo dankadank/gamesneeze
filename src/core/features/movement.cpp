@@ -110,8 +110,6 @@ void Features::Movement::postPredCreateMove(CUserCmd* cmd) {
     jumpBug(cmd);
 }
 
-Vector predOrigin;
-
 void Features::Movement::edgeBugPredictor(CUserCmd* cmd) {
     if (!CONFIGBOOL("Misc>Misc>Movement>EdgeBug") ||
             !Menu::CustomWidgets::isKeyDown(CONFIGINT("Misc>Misc>Movement>EdgeBug Key")))
@@ -129,7 +127,6 @@ void Features::Movement::edgeBugPredictor(CUserCmd* cmd) {
             }
             shouldEdgebug = checkEdgebug();
             edgebugPos = Globals::localPlayer->origin();
-            predOrigin = Globals::localPlayer->origin();
         Features::Prediction::end();
     }
 }
@@ -151,7 +148,7 @@ void Features::Movement::draw() {
     }
 
     Vector pos2d;
-    if (worldToScreen(predOrigin, pos2d)) {
-        Globals::drawList->AddText(ImVec2(pos2d.x, pos2d.y), ImColor(255, 255, 0, 255), "x");
+    if (worldToScreen(edgebugPos, pos2d)) {
+        Globals::drawList->AddText(ImVec2(pos2d.x, pos2d.y), ImColor(255, 255, 0, 255), "+");
     }
 }

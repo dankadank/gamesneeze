@@ -59,7 +59,7 @@ bool checkEdgebug(){ // need to find/get a better edgebug detection method, unsu
     return Features::Movement::velBackup.z < -7 && 
             floor(Globals::localPlayer->velocity().z) >= -7 && 
             Globals::localPlayer->velocity().Length2D() >= Features::Movement::velBackup.Length2D() && 
-            !(Globals::localPlayer->flags() & FL_ONGROUND || Globals::localPlayer->flags() & FL_PARTIALGROUND);
+            !(Globals::localPlayer->flags() & FL_ONGROUND);
 }
 
 void edgeBugEnforcer(CUserCmd* cmd) {
@@ -124,17 +124,21 @@ void Features::Movement::edgeBugPredictor(CUserCmd* cmd) {
         if (shouldEdgebug)
             break;
         Features::Prediction::start(cmd);
-        if (Globals::localPlayer->flags() & FL_ONGROUND) {
-            break;
-        }
-        shouldEdgebug = checkEdgebug();
-        edgebugPos = Globals::localPlayer->origin();
-        predOrigin = Globals::localPlayer->origin();
+            if (Globals::localPlayer->flags() & FL_ONGROUND) {
+                break;
+            }
+            shouldEdgebug = checkEdgebug();
+            edgebugPos = Globals::localPlayer->origin();
+            predOrigin = Globals::localPlayer->origin();
         Features::Prediction::end();
     }
 }
 
 void Features::Movement::draw() {
+    if (!CONFIGBOOL("Misc>Misc>Movement>EdgeBug") ||
+            !Menu::CustomWidgets::isKeyDown(CONFIGINT("Misc>Misc>Movement>EdgeBug Key")))
+        return;
+
     if (Features::Movement::shouldEdgebug) {
         Globals::drawList->AddText(ImVec2((Globals::screenSizeX / 2) - (ImGui::CalcTextSize("EdgeBug").x / 2) + 1, (Globals::screenSizeY / 2) + 31), ImColor(0, 0, 0, 255), "EdgeBug");
         Globals::drawList->AddText(ImVec2((Globals::screenSizeX / 2) - (ImGui::CalcTextSize("EdgeBug").x / 2), (Globals::screenSizeY / 2) + 30), ImColor(255, 255, 255, 255), "EdgeBug");
@@ -146,9 +150,6 @@ void Features::Movement::draw() {
         }
     }
 
-    if (!CONFIGBOOL("Misc>Misc>Movement>EdgeBug") ||
-            !Menu::CustomWidgets::isKeyDown(CONFIGINT("Misc>Misc>Movement>EdgeBug Key")))
-        return;
     Vector pos2d;
     if (worldToScreen(predOrigin, pos2d)) {
         Globals::drawList->AddText(ImVec2(pos2d.x, pos2d.y), ImColor(255, 255, 0, 255), "x");

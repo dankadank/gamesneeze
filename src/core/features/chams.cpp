@@ -182,6 +182,9 @@ void chamWeapon(void* thisptr, void* ctx, const DrawModelState_t &state, const M
 void Features::Chams::drawModelExecute(void* thisptr, void* ctx, const DrawModelState_t &state, const ModelRenderInfo_t &pInfo, matrix3x4_t *pCustomBoneToWorld) {
     createMaterials();
 
+    if(!Interfaces::engine->IsInGame())
+        Hooks::DrawModelExecute::original(thisptr, ctx, state, pInfo, pCustomBoneToWorld);
+
 	const char* modelName = Interfaces::modelInfo->GetModelName(pInfo.pModel);
 	if (strstr(modelName, "models/player") && !strstr(modelName, "shadow")) {
         chamPlayer(thisptr, ctx, state, pInfo, pCustomBoneToWorld);

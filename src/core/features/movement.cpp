@@ -55,10 +55,10 @@ void jumpBug(CUserCmd* cmd) {
     }
 }
 
-bool checkEdgebug(){ // need to find/get a better edgebug detection method, unsure if this will work on 128tick
-    return Features::Movement::velBackup.z < -7 && 
-            floor(Globals::localPlayer->velocity().z) >= -7 && 
-            Globals::localPlayer->velocity().Length2D() >= Features::Movement::velBackup.Length2D() && 
+bool checkEdgebug(){ // need to find/get a better edgebug detection method before i kms
+    return Features::Movement::velBackup.z < -6 && 
+            Globals::localPlayer->velocity().z < -6 &&
+            Features::Movement::velBackup.z < Globals::localPlayer->velocity().z &&
             !(Globals::localPlayer->flags() & FL_ONGROUND);
 }
 

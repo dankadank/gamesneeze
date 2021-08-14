@@ -121,6 +121,8 @@ void Features::Movement::edgeBugPredictor(CUserCmd* cmd) {
     for (int i = 0; i < predictAmount; i++) { // this is roughly the famous 'clarity' edgebug (lol)
         if (shouldEdgebug)
             break;
+        velBackup = Globals::localPlayer->velocity();
+        flagsBackup = Globals::localPlayer->flags();
         Features::Prediction::start(cmd);
             if (Globals::localPlayer->flags() & FL_ONGROUND) {
                 break;
